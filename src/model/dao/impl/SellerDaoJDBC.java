@@ -6,10 +6,7 @@ import model.dao.SellerDAO;
 import model.entities.Department;
 import model.entities.Seller;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +22,38 @@ public class SellerDaoJDBC implements SellerDAO {
 
     @Override
     public void insert(Seller s) {
+        PreparedStatement st = null;
+        try{
+            st = connection.prepareStatement(
+                    "INSERT INTO seller\n " +
+                        "(Name, Email, BirthDate, BaseSalary, DepartmentId)\n " +
+                        "VALUES\n " +
+                        "(?, ?, ?, ?, ?)",
+                        Statement.RETURN_GENERATED_KEYS);
 
+            st.setString(1, s.getNome());
+            st.setString(2, s.getEmail());
+            st.setDate(3, new java.sql.Date(s.getDataNascimento().getTime()));
+            st.setDouble(4, s.getSalarioBase());
+            st.setInt(5, s.getDepartment().getId());
+
+            int rowsAffected = st.executeUpdate();
+
+            if(rowsAffected > 0){
+                ResultSet rs = st.getGeneratedKeys();
+                if(rs.next()){
+                    int id = rs.getInt(1);
+                    s.setId(id);
+                }
+                DB.closeResultSet(rs);
+            }else{
+                throw new DbException("Erro inesperado! Nenhuma linha afetada!");
+            }
+        }catch (SQLException e){
+            throw new DbException(e.getMessage());
+        }finally{
+            DB.closeStatement(st);
+        }
     }
 
     @Override
