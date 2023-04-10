@@ -33,10 +33,10 @@ public class Program {
             System.out.println(seller);
         }
 
-        System.out.println("\n=== TESTE 4: Seller Insert ===");
+        /*System.out.println("\n=== TESTE 4: Seller Insert ===");
         Seller s2 = new Seller(null, "Greg", "greg@gmail.com", new Date(), 4000.0, d);
         sellerDAO.insert(s2);
-        System.out.println("INSERIDO! Novo id = " + s2.getId());
+        System.out.println("INSERIDO! Novo id = " + s2.getId()); */
 
         System.out.println("\n=== TESTE 5: Seller Update ===");
         s = sellerDAO.findById(1);
